@@ -133,28 +133,27 @@ details[open] summary {
 
 /* Music Controls Section */
 #music-controls {
+  position: fixed;
+  left: calc(100vw - 300px);
+  top: calc(100vh - 80px);
+  width: 280px;
   background-image: url('img/background-controls.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-
   border: 3px solid #8E44AD;
+  border-radius: 10px;
   padding: 1rem 1.5rem;
   box-shadow: 0 0 12px #4FD0E6;
-  position: fixed;
-  /* Remove bottom & right to allow dragging positioning */
-  border-radius: 10px;
-  z-index: 999;
   color: white;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.4rem;
   user-select: none;
-  cursor: move; /* show draggable cursor */
-  width: 280px;
-  left: calc(100vw - 300px); /* initial near bottom right */
-  top: calc(100vh - 80px);
+  cursor: move;
+  z-index: 999;
+  overflow: hidden; /* clip ::before inside border-radius */
   transition: box-shadow 0.3s ease;
 }
 
@@ -165,8 +164,14 @@ details[open] summary {
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(28, 27, 47, 0.75);
   border-radius: 10px;
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
+}
+
+/* Ensure children are above overlay */
+#music-controls > * {
+  position: relative;
+  z-index: 1;
 }
 
 #player {
@@ -253,6 +258,53 @@ details[open] summary {
   color: #00FFFF;
 }
 
+/* Progress bar container */
+#progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 0.5rem;
+  width: 100%;
+  flex-grow: 1;
+}
+
+/* Progress bar styling */
+#progressBar {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #00FFFF, #26D7C4);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+
+/* Progress bar thumb Webkit */
+#progressBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #8E44AD;
+  cursor: pointer;
+  box-shadow: 0 0 5px #4FD0E6;
+  border: none;
+  margin-top: -5px;
+}
+
+/* Progress bar thumb Firefox */
+#progressBar::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #8E44AD;
+  cursor: pointer;
+  box-shadow: 0 0 5px #4FD0E6;
+  border: none;
+}
+
 /* Now playing text */
 #nowPlaying {
   flex-basis: 100%;
@@ -261,6 +313,60 @@ details[open] summary {
   font-weight: bold;
   font-size: 1rem;
   user-select: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 400px) {
+  #music-controls {
+    width: 95vw;
+    left: 2.5vw !important;
+    top: auto !important;
+    bottom: 10px;
+    padding: 0.8rem 1rem;
+  }
+
+  #player {
+    gap: 0.3rem;
+  }
+
+  #player button {
+    font-size: 1rem;
+    flex: 1 1 22%;
+    min-width: 32px;
+    padding: 0.3rem 0.6rem;
+  }
+
+  #volumeControl {
+    flex: 1 1 50%;
+    margin-left: 0.3rem;
+    height: 6px;
+  }
+
+  #progressBar {
+    height: 6px;
+  }
+
+  #progressBar::-webkit-slider-thumb,
+  #volumeControl::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+    margin-top: -4px;
+  }
+
+  #progressBar::-moz-range-thumb,
+  #volumeControl::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+  }
+
+  #volumeLabel {
+    font-size: 1.1rem;
+    margin-left: 0.3rem;
+  }
+
+  #nowPlaying {
+    font-size: 0.9rem;
+  }
 }
 
 /* Footer */
@@ -299,4 +405,10 @@ footer {
     flex: 1 1 auto;
     margin-left: 0.2rem;
   }
+}
+
+.shuffle-on {
+  background-color: #f0c040;
+  color: #222;
+  font-weight: bold;
 }

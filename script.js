@@ -1,5 +1,3 @@
-  // script.js
-
 const songs = [
 {
     title: "Aurora Drift",
@@ -257,7 +255,7 @@ const songs = [
 const instrumentalDetails = document.getElementById('instrumentalDetails');
 const vocalDetails = document.getElementById('vocalDetails');
 
-const createSongDiv = (song) => {
+const createSongDiv = (song, index) => {
   const songDiv = document.createElement('div');
   songDiv.classList.add('song');
   songDiv.innerHTML = `
@@ -268,15 +266,16 @@ const createSongDiv = (song) => {
       Your browser does not support the audio element.
     </audio>
     <a href="${song.file}" download>Download</a>
+    <button class="playThisBtn" data-index="${index}">▶ Play this</button>
   `;
   return songDiv;
 };
 
-songs.forEach(song => {
+songs.forEach((song, index) => {
   if (song.type === 'Instrumental') {
-    instrumentalDetails.querySelector('.song-list').appendChild(createSongDiv(song));
+    instrumentalDetails.querySelector('.song-list').appendChild(createSongDiv(song, index));
   } else {
-    vocalDetails.querySelector('.song-list').appendChild(createSongDiv(song));
+    vocalDetails.querySelector('.song-list').appendChild(createSongDiv(song, index));
   }
 });
 
@@ -288,132 +287,164 @@ let shuffledOrder = [];
 const shuffleBtn = document.getElementById('shuffleBtn');
 const nowPlaying = document.getElementById('nowPlaying');
 const volumeControl = document.getElementById('volumeControl');
+const togglePlayPauseBtn = document.getElementById('togglePlayPauseBtn');
+const nextBtn = document.getElementById('nextBtn');
+const prevBtn = document.getElementById('prevBtn');
+const progressBar = document.getElementById('progressBar');
 
+// Set default volume
+volumeControl.value = 0.5;
+audioPlayer.volume = 0.5;
+
+// Update "Now Playing" text
 function updateNowPlaying() {
   nowPlaying.textContent = `▶ Now Playing: ${songs[currentIndex].title}`;
 }
 
+// Load and play song by index
 function playSong(index) {
   currentIndex = index;
   audioPlayer.src = songs[currentIndex].file;
   audioPlayer.play();
   updateNowPlaying();
+  togglePlayPauseBtn.textContent = "⏸"; // show pause icon
 }
 
+// Play next song (with shuffle support)
 function playNext() {
   if (isShuffle) {
-    currentIndex = (currentIndex + 1) % shuffledOrder.length;
-    playSong(shuffledOrder[currentIndex]);
+    if (shuffledOrder.length === 0) buildShuffledOrder();
+    let currentPos = shuffledOrder.indexOf(currentIndex);
+    currentPos = (currentPos + 1) % shuffledOrder.length;
+    currentIndex = shuffledOrder[currentPos];
   } else {
     currentIndex = (currentIndex + 1) % songs.length;
-    playSong(currentIndex);
   }
+  playSong(currentIndex);
 }
 
+// Play previous song (with shuffle support)
 function playPrev() {
   if (isShuffle) {
-    currentIndex = (currentIndex - 1 + shuffledOrder.length) % shuffledOrder.length;
-    playSong(shuffledOrder[currentIndex]);
+    if (shuffledOrder.length === 0) buildShuffledOrder();
+    let currentPos = shuffledOrder.indexOf(currentIndex);
+    currentPos = (currentPos - 1 + shuffledOrder.length) % shuffledOrder.length;
+    currentIndex = shuffledOrder[currentPos];
   } else {
     currentIndex = (currentIndex - 1 + songs.length) % songs.length;
-    playSong(currentIndex);
+  }
+  playSong(currentIndex);
+}
+
+// Build shuffled order array
+function buildShuffledOrder() {
+  shuffledOrder = [...Array(songs.length).keys()];
+  for (let i = shuffledOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledOrder[i], shuffledOrder[j]] = [shuffledOrder[j], shuffledOrder[i]];
   }
 }
 
+// Toggle shuffle but do NOT change current song immediately
 function toggleShuffle() {
   isShuffle = !isShuffle;
   shuffleBtn.classList.toggle('shuffle-on', isShuffle);
-
-  if (isShuffle) {
-    shuffledOrder = [...Array(songs.length).keys()];
-    // Shuffle the array
-    for (let i = shuffledOrder.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledOrder[i], shuffledOrder[j]] = [shuffledOrder[j], shuffledOrder[i]];
-    }
-    // Reset currentIndex to 0 for shuffled list
-    currentIndex = 0;
+  if (isShuffle && shuffledOrder.length === 0) {
+    buildShuffledOrder();
   }
-  updateNowPlaying();
+  // Don't change song on shuffle toggle - just toggle state
 }
 
-// Volume control
-volumeControl.value = 0.5;
-audioPlayer.volume = 0.5;
+// Toggle play/pause button
+function togglePlayPause() {
+  if (audioPlayer.paused) {
+    audioPlayer.play();
+    togglePlayPauseBtn.textContent = "⏸";
+  } else {
+    audioPlayer.pause();
+    togglePlayPauseBtn.textContent = "▶";
+  }
+}
+
+// Event listeners for buttons
+togglePlayPauseBtn.addEventListener('click', () => {
+  if (!audioPlayer.src) playSong(currentIndex);
+  else togglePlayPause();
+});
+nextBtn.addEventListener('click', playNext);
+prevBtn.addEventListener('click', playPrev);
+shuffleBtn.addEventListener('click', toggleShuffle);
 volumeControl.addEventListener('input', e => {
   audioPlayer.volume = e.target.value;
 });
 
-// Play controls
-document.getElementById('playBtn').addEventListener('click', () => {
-  if (!audioPlayer.src) playSong(currentIndex);
-  else audioPlayer.play();
+// Update progress bar - keep this, but remove time display updates
+audioPlayer.addEventListener('timeupdate', () => {
+  if (!isNaN(audioPlayer.duration)) {
+    progressBar.max = Math.floor(audioPlayer.duration);
+    progressBar.value = Math.floor(audioPlayer.currentTime);
+  }
 });
 
-document.getElementById('pauseBtn').addEventListener('click', () => {
-  audioPlayer.pause();
+// Seek song by clicking or dragging progress bar
+progressBar.addEventListener('input', () => {
+  audioPlayer.currentTime = progressBar.value;
 });
 
-document.getElementById('nextBtn').addEventListener('click', () => {
-  playNext();
+// Auto play next song on ended
+audioPlayer.addEventListener('ended', playNext);
+
+// Play song from "Play this" buttons in song list
+document.querySelectorAll('.playThisBtn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const index = parseInt(e.target.getAttribute('data-index'), 10);
+    playSong(index);
+  });
 });
 
-document.getElementById('prevBtn').addEventListener('click', () => {
-  playPrev();
-});
-
-shuffleBtn.addEventListener('click', toggleShuffle);
-
-// Auto play next on end
-audioPlayer.addEventListener('ended', () => {
-  playNext();
-});
-
-// Initialize now playing
+// Initialize player display
 updateNowPlaying();
-
-
-// DRAGGABLE MUSIC CONTROLS
+togglePlayPauseBtn.textContent = "▶";
 
 const musicControls = document.getElementById('music-controls');
 
 let isDragging = false;
-let offsetX, offsetY;
+let offsetX = 0;
+let offsetY = 0;
 
+// Make sure position is fixed for dragging
 musicControls.style.position = 'fixed';
 
-// Set initial position bottom right on page load
+// Set initial position bottom-right inside viewport with margin
 function setInitialPosition() {
   const margin = 20;
-  musicControls.style.left = (window.innerWidth - musicControls.offsetWidth - margin) + 'px';
-  musicControls.style.top = (window.innerHeight - musicControls.offsetHeight - margin) + 'px';
+  const left = window.innerWidth - musicControls.offsetWidth - margin;
+  const top = window.innerHeight - musicControls.offsetHeight - margin;
+  musicControls.style.left = left + 'px';
+  musicControls.style.top = top + 'px';
 }
 
-window.addEventListener('resize', () => {
-  // Optional: reposition if window resizes
-  setInitialPosition();
-});
+// Call on load and resize
+window.addEventListener('load', setInitialPosition);
+window.addEventListener('resize', setInitialPosition);
 
-setInitialPosition();
-
+// Mouse down starts dragging, but only if not clicking controls inside
 musicControls.addEventListener('mousedown', (e) => {
-  // Only drag if clicked on the music-controls container, not on buttons/slider
-  if (
-    e.target.tagName === 'BUTTON' ||
-    e.target.tagName === 'INPUT' ||
-    e.target.tagName === 'A' ||
-    e.target.tagName === 'AUDIO' ||
-    e.target.closest('audio')
-  ) {
-    return; // ignore drag if interacting with controls
-  }
+  // Prevent dragging if clicking buttons, inputs, links, audio controls inside container
+  const tag = e.target.tagName.toLowerCase();
+  if (['button', 'input', 'a', 'audio'].includes(tag) || e.target.closest('audio')) return;
+
   isDragging = true;
   offsetX = e.clientX - musicControls.getBoundingClientRect().left;
   offsetY = e.clientY - musicControls.getBoundingClientRect().top;
   musicControls.style.transition = 'none';
   musicControls.style.cursor = 'grabbing';
+
+  // Prevent text selection while dragging
+  e.preventDefault();
 });
 
+// Stop dragging on mouse up
 document.addEventListener('mouseup', () => {
   if (isDragging) {
     isDragging = false;
@@ -422,22 +453,24 @@ document.addEventListener('mouseup', () => {
   }
 });
 
+// Dragging logic on mouse move
 document.addEventListener('mousemove', (e) => {
   if (!isDragging) return;
-  let left = e.clientX - offsetX;
-  let top = e.clientY - offsetY;
 
-  // Boundaries inside viewport
+  let newLeft = e.clientX - offsetX;
+  let newTop = e.clientY - offsetY;
+
+  // Clamp position so it stays inside viewport
   const minLeft = 0;
   const minTop = 0;
   const maxLeft = window.innerWidth - musicControls.offsetWidth;
   const maxTop = window.innerHeight - musicControls.offsetHeight;
 
-  if (left < minLeft) left = minLeft;
-  if (top < minTop) top = minTop;
-  if (left > maxLeft) left = maxLeft;
-  if (top > maxTop) top = maxTop;
+  if (newLeft < minLeft) newLeft = minLeft;
+  if (newTop < minTop) newTop = minTop;
+  if (newLeft > maxLeft) newLeft = maxLeft;
+  if (newTop > maxTop) newTop = maxTop;
 
-  musicControls.style.left = left + 'px';
-  musicControls.style.top = top + 'px';
+  musicControls.style.left = newLeft + 'px';
+  musicControls.style.top = newTop + 'px';
 });

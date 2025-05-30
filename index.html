@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VibeCraft Songs</title>
+  <link rel="icon" type="image/x-icon" href="Img/logo.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -15,7 +16,6 @@
 
 <main>
   <section id="songs">
-
     <details id="instrumentalDetails">
       <summary>Instrumental Songs</summary>
       <div class="song-list"></div>
@@ -25,21 +25,24 @@
       <summary>Instrumental + Vocal Songs</summary>
       <div class="song-list"></div>
     </details>
-
   </section>
 </main>
 
 <!-- Music Controls -->
 <div id="music-controls" title="Drag me around">
   <div id="player">
-    <button id="prevBtn" title="Previous">&#9664;</button>
-    <button id="playBtn" title="Play">&#9654;</button>
-    <button id="pauseBtn" title="Pause">&#10074;&#10074;</button>
-    <button id="nextBtn" title="Next">&#9654;&#9654;</button>
+    <button id="prevBtn" title="Previous">⏮</button>
+    <button id="togglePlayPauseBtn" title="Play/Pause">▶</button>
+    <button id="nextBtn" title="Next">⏭</button>
     <button id="shuffleBtn" title="Shuffle">🔀</button>
     <input type="range" id="volumeControl" min="0" max="1" step="0.01" title="Volume" />
     <span id="volumeLabel">🔊</span>
   </div>
+
+  <div id="progress-container" style="display:flex; align-items:center; gap: 10px; margin-top: 5px;">
+    <input type="range" id="progressBar" value="0" min="0" max="100" step="1" style="flex-grow:1;" />
+  </div>
+
   <div id="nowPlaying">▶ Now Playing: None</div>
 </div>
 
