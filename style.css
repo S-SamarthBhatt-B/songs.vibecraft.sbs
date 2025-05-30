@@ -1,0 +1,302 @@
+/* style.css */
+
+/* Main webpage background */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: url('img/background-main.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #FFFFFF; /* Bright White */
+  margin: 0;
+  padding: 0;
+  position: relative;
+  min-height: 100vh;
+}
+
+header {
+  background-color: #2E2C4A; /* Deep Indigo */
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 0 10px #4FD0E6;
+}
+
+header h1 {
+  font-size: 3rem;
+  color: #8E44AD; /* Vibrant Purple */
+  margin: 0;
+}
+
+header p {
+  color: #9B89B3; /* Muted Lavender */
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+main {
+  padding: 2rem;
+  max-width: 900px;
+  margin: auto;
+}
+
+section#songs h2 {
+  text-align: center;
+  color: #00FFFF; /* Electric Aqua */
+  margin-bottom: 2rem;
+  text-shadow: 0 0 5px #4FD0E6;
+}
+
+/* Dropdown Sections */
+details {
+  position: relative;
+  background-image: url('img/background-dropdown.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid #8E44AD;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 8px #4FD0E6;
+  color: white;
+  overflow: hidden;
+}
+
+/* Dark overlay on dropdown for readability */
+details::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(28, 27, 47, 0.75);  /* dark purple overlay */
+  border-radius: 8px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+details summary {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #26D7C4; /* Soft Teal */
+  cursor: pointer;
+}
+
+details[open] summary {
+  color: #00FFFF;
+}
+
+/* Songs list inside dropdown */
+.song-list {
+  margin-top: 1rem;
+}
+
+/* Individual Song Cards */
+.song {
+  background-color: #1C1B2F; /* Dark Purple */
+  border: 1px solid #8E44AD;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 10px #4FD0E6;
+  color: white;
+  user-select: none;
+}
+
+.song h3 {
+  color: #8E44AD;
+  margin: 0 0 0.5rem;
+}
+
+.song p {
+  color: #AAAAAA; /* Slate Gray */
+  margin: 0.5rem 0;
+}
+
+.song audio {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.song a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #00FFFF;
+  text-decoration: none;
+  font-weight: bold;
+  user-select: text;
+}
+
+.song a:hover {
+  color: #4FD0E6;
+  text-shadow: 0 0 5px #00FFFF;
+}
+
+/* Music Controls Section */
+#music-controls {
+  background-image: url('img/background-controls.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  border: 3px solid #8E44AD;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 0 12px #4FD0E6;
+  position: fixed;
+  /* Remove bottom & right to allow dragging positioning */
+  border-radius: 10px;
+  z-index: 999;
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  user-select: none;
+  cursor: move; /* show draggable cursor */
+  width: 280px;
+  left: calc(100vw - 300px); /* initial near bottom right */
+  top: calc(100vh - 80px);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Dark overlay inside music controls for readability */
+#music-controls::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(28, 27, 47, 0.75);
+  border-radius: 10px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+#player {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 0.4rem;
+  position: relative;
+  z-index: 1;
+}
+
+#player button {
+  background-color: #8E44AD;
+  border: none;
+  border-radius: 5px;
+  padding: 0.4rem 0.8rem;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 0 8px #4FD0E6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  flex: 1 1 20%;
+  min-width: 40px;
+  text-align: center;
+  user-select: none;
+}
+
+#player button:hover {
+  background-color: #26D7C4;
+  box-shadow: 0 0 12px #00FFFF;
+}
+
+/* Shuffle Button ON/OFF styles */
+#shuffleBtn.shuffle-on {
+  background-color: #26D7C4;
+  color: #1C1B2F;
+  box-shadow: 0 0 14px #00FFFF;
+}
+
+/* Volume slider */
+#volumeControl {
+  flex: 1 1 40%;
+  cursor: pointer;
+  -webkit-appearance: none;
+  height: 8px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #00FFFF, #26D7C4);
+  outline: none;
+  margin-left: 0.5rem;
+  user-select: none;
+}
+
+#volumeControl::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #8E44AD;
+  cursor: pointer;
+  box-shadow: 0 0 5px #4FD0E6;
+  border: none;
+  margin-top: -5px;
+}
+
+#volumeControl::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #8E44AD;
+  cursor: pointer;
+  box-shadow: 0 0 5px #4FD0E6;
+  border: none;
+}
+
+/* Volume label */
+#volumeLabel {
+  flex: 0 0 auto;
+  font-size: 1.3rem;
+  margin-left: 0.4rem;
+  user-select: none;
+  color: #00FFFF;
+}
+
+/* Now playing text */
+#nowPlaying {
+  flex-basis: 100%;
+  margin-top: 0.6rem;
+  color: #00FFFF;
+  font-weight: bold;
+  font-size: 1rem;
+  user-select: none;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #2E2C4A;
+  color: #9B89B3;
+  border-top: 1px solid #8E44AD;
+  user-select: none;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 600px) {
+  main {
+    padding: 1rem;
+  }
+
+  #music-controls {
+    width: 90vw;
+    left: 5vw !important;
+    top: auto !important;
+    bottom: 10px !important;
+    cursor: default;
+    flex-wrap: nowrap;
+  }
+
+  #player button {
+    flex: 1 1 auto;
+    min-width: auto;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  #volumeControl {
+    flex: 1 1 auto;
+    margin-left: 0.2rem;
+  }
+}

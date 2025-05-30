@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VibeCraft Songs</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <h1>VibeCraft Songs</h1>
+  <p>Explore Instrumental and Vocal Tracks</p>
+</header>
+
+<main>
+  <section id="songs">
+
+    <details id="instrumentalDetails">
+      <summary>Instrumental Songs</summary>
+      <div class="song-list"></div>
+    </details>
+
+    <details id="vocalDetails">
+      <summary>Instrumental + Vocal Songs</summary>
+      <div class="song-list"></div>
+    </details>
+
+  </section>
+</main>
+
+<!-- Music Controls -->
+<div id="music-controls" title="Drag me around">
+  <div id="player">
+    <button id="prevBtn" title="Previous">&#9664;</button>
+    <button id="playBtn" title="Play">&#9654;</button>
+    <button id="pauseBtn" title="Pause">&#10074;&#10074;</button>
+    <button id="nextBtn" title="Next">&#9654;&#9654;</button>
+    <button id="shuffleBtn" title="Shuffle">🔀</button>
+    <input type="range" id="volumeControl" min="0" max="1" step="0.01" title="Volume" />
+    <span id="volumeLabel">🔊</span>
+  </div>
+  <div id="nowPlaying">▶ Now Playing: None</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
